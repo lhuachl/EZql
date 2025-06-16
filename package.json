@@ -1,0 +1,41 @@
+{
+  "name": "ezql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node main.ts",
+    "test-crud": "ts-node test-crud.ts",
+    "build": "tsc",
+    "start": "node dist/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lhuachl/EZql.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lhuachl/EZql/issues"
+  },
+  "homepage": "https://github.com/lhuachl/EZql#readme",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.23",
+    "@types/node": "^24.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@types/mssql": "^9.1.7",
+    "axios": "^1.10.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mssql": "^11.0.1",
+    "ts-node-dev": "^2.0.0",
+    "tsc": "^2.0.4"
+  }
+}
