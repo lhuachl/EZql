@@ -21,6 +21,10 @@ export { InsertQueryBuilder } from './core/query/InsertQueryBuilder';
 export { UpdateQueryBuilder } from './core/query/UpdateQueryBuilder';
 export { DeleteQueryBuilder } from './core/query/DeleteQueryBuilder';
 
+// === ENTIDADES EZQL (ACTIVE RECORD PATTERN) ===
+export { EZqlEntity } from './core/entity/EZqlEntity';
+export type { EntityConfig, FindOptions } from './core/entity/EZqlEntity';
+
 // Fluent query builders
 export { FluentSelectQuery } from './builders/FluentSelectQuery';
 export { FluentInsertQuery } from './builders/FluentInsertQuery';
