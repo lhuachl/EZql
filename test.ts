@@ -256,7 +256,7 @@ async function main() {
 
   // Crear aplicación EZql
   const app = new EZqlApplication({
-    port: 3002,
+    port: 3000,
     host: 'localhost',
     cors: { origin: '*', credentials: false },
     documentation: {
