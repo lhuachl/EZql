@@ -2,8 +2,11 @@
   "name": "ezql",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",  "scripts": {
-    "test": "ts-node test.ts",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node test.ts --basic",
+    "api": "ts-node test.ts",
+    "server": "ts-node test.ts",
     "dev": "ts-node simple-demo.ts",
     "build": "tsc",
     "start": "node dist/simple-demo.js"
@@ -28,12 +31,14 @@
     "@types/node": "^24.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
-  },  "dependencies": {
+  },
+  "dependencies": {
     "@types/mssql": "^9.1.7",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "helmet": "^7.1.0",
+    "msnodesqlv8": "^4.5.0",
     "mssql": "^11.0.1",
     "reflect-metadata": "^0.1.13"
   }

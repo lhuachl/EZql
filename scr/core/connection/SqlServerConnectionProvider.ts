@@ -10,18 +10,15 @@ export class SqlServerConnectionProvider implements IConnectionProvider {
   constructor(config: ConnectionConfig) {
     this.config = this.buildMssqlConfig(config);
   }
-
   private buildMssqlConfig(config: ConnectionConfig): mssql.config {
-    return {
+    const baseConfig: mssql.config = {
       server: config.server,
       database: config.database,
-      user: config.username,
-      password: config.password,
-      port: config.port || 1434,
+      port: config.port || 1433,
       options: {
-        encrypt: config.encrypt ?? true,
+        encrypt: config.encrypt ?? false,
         trustServerCertificate: config.trustServerCertificate ?? true,
-        enableArithAbort: true,
+        enableArithAbort: config.options?.enableArithAbort ?? true,
         requestTimeout: config.requestTimeout ?? 30000,
         connectTimeout: config.connectTimeout ?? 30000,
       },
@@ -30,7 +27,21 @@ export class SqlServerConnectionProvider implements IConnectionProvider {
         min: config.poolConfig?.min ?? 0,
         idleTimeoutMillis: config.poolConfig?.idleTimeoutMillis ?? 30000,
       },
-    };
+    };    // ✅ Configurar autenticación según el tipo
+    // Si se especifica autenticación NTLM, delegar a Tedious via propiedad authentication
+    if (config.authentication?.type === 'ntlm' && config.authentication.options) {
+      console.log('🔐 Configurando NTLM Windows Authentication');
+      (baseConfig as any).authentication = { ...config.authentication };
+    } else if (config.username && config.password) {
+      // SQL Server Authentication
+      console.log('🔐 Configurando SQL Server Authentication');
+      baseConfig.user = config.username;
+      baseConfig.password = config.password;
+    } else {
+      console.warn('⚠️ Sin credenciales - usando Windows Authentication por defecto');
+    }
+
+    return baseConfig;
   }
 
   async connect(): Promise<void> {
@@ -38,22 +49,25 @@ export class SqlServerConnectionProvider implements IConnectionProvider {
     if (this.isConnecting) return;
 
     this.isConnecting = true;
-    
     try {
-      this.pool = new mssql.ConnectionPool(this.config);
-      
-      this.pool.on('error', (err) => {
-        console.error('❌ Connection pool error:', err);
-      });
-
-      await this.pool.connect();
+      // Si se configuró driver msnodesqlv8, usarlo para Windows Auth
+      if ((this.config as any).driver === 'msnodesqlv8') {
+        const { ConnectionPool } = require('mssql/msnodesqlv8');
+        this.pool = new ConnectionPool(this.config as any);
+        console.log('🔗 Usando msnodesqlv8 para Windows Authentication');
+      } else {
+        this.pool = new mssql.ConnectionPool(this.config);
+      }
+      // Asegurar que this.pool no sea null
+      if (!this.pool) {
+        throw new EZqlError('Connection pool not initialized', 'NO_POOL');
+      }
+      const pool = this.pool;
+      pool.on('error', (err) => console.error('❌ Connection pool error:', err));
+      await pool.connect();
       console.log('✅ Connected to SQL Server successfully');
     } catch (error: any) {
-      throw new EZqlError(
-        'Failed to connect to database',
-        'CONNECTION_ERROR',
-        error
-      );
+      throw new EZqlError('Failed to connect to database', 'CONNECTION_ERROR', error);
     } finally {
       this.isConnecting = false;
     }

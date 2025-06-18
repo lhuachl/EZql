@@ -15,14 +15,14 @@ const MIDDLEWARE_METADATA = Symbol('ezql:middleware');
 
 /**
  * @Injectable - Marca una clase como inyectable en el contenedor DI
- * 
- * @example
- * ```typescript
- * @Injectable()
- * export class UserService {
- *   constructor(private db: EZqlClient) {}
- * } * ```
  */
+export function Injectable() {
+  return function<T extends new (...args: any[]) => any>(constructor: T) {
+    // Marcar la clase como inyectable
+    Reflect.defineMetadata('ezql:injectable', true, constructor);
+    return constructor;
+  };
+}
 
 // === DECORADOR PRINCIPAL DE CONTROLADOR ===
 
