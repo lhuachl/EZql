@@ -27,12 +27,6 @@ export { DeleteQueryBuilder } from './core/query/DeleteQueryBuilder';
 export { EZqlEntity } from './core/entity/EZqlEntity';
 export type { EntityConfig, FindOptions } from './core/entity/EZqlEntity';
 
-// Fluent query builders
-export { FluentSelectQuery } from './builders/FluentSelectQuery';
-export { FluentInsertQuery } from './builders/FluentInsertQuery';
-export { FluentUpdateQuery } from './builders/FluentUpdateQuery';
-export { FluentDeleteQuery } from './builders/FluentDeleteQuery';
-
 // === WEB FRAMEWORK ===
 
 // Framework web completo con decoradores (re-exportación específica para evitar conflictos)

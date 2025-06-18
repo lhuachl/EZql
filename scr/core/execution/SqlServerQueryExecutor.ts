@@ -45,8 +45,7 @@ export class SqlServerQueryExecutor implements IQueryExecutor {
         console.log(`⏱️ Query executed in ${Date.now() - startTime}ms`);
       }
 
-      return result.recordset || [];
-    } catch (error: any) {
+      return result.recordset || [];    } catch (error: any) {
       throw new EZqlError(
         `Query execution failed: ${error.message}`,
         'EXECUTION_ERROR',
