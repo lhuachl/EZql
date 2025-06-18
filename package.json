@@ -2,10 +2,10 @@
   "name": "ezql",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
+  "main": "index.js",  "scripts": {
     "test": "ts-node test.ts --basic",
     "api": "ts-node test.ts",
+    "demo": "ts-node demo-framework.ts",
     "server": "ts-node test.ts",
     "dev": "ts-node simple-demo.ts",
     "build": "tsc",

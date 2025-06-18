@@ -6,10 +6,10 @@ import { HttpMethod, RouteMetadata, ControllerMetadata, ParameterMetadata, Param
 
 // === METADATOS DE REFLECTION ===
 
-const CONTROLLER_METADATA = Symbol('ezql:controller');
-const ROUTE_METADATA = Symbol('ezql:route');
-const PARAMETER_METADATA = Symbol('ezql:parameter');
-const MIDDLEWARE_METADATA = Symbol('ezql:middleware');
+const CONTROLLER_METADATA = Symbol.for('ezql:controller');
+const ROUTE_METADATA = Symbol.for('ezql:route');
+const PARAMETER_METADATA = Symbol.for('ezql:parameter');
+const MIDDLEWARE_METADATA = Symbol.for('ezql:middleware');
 
 // === DECORADOR DE INYECCIÓN DE DEPENDENCIAS ===
 

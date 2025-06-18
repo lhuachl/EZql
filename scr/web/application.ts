@@ -8,6 +8,7 @@ import compression from 'compression';
 import { EZqlClient } from '../core/EZqlClient';
 import { EZqlRouter, ezqlErrorHandler } from './router';
 import { DIContainer, getContainer } from './di-container';
+import { bootstrap as bootstrapControllers, getControllersInfo } from './bootstrap';
 import { EZqlWebConfig, Constructor, EZqlWebError } from './types';
 
 /**
@@ -20,6 +21,7 @@ export class EZqlApplication {
   private container: DIContainer;
   private config: EZqlWebConfig;
   private ezqlClient?: EZqlClient;
+  private controllers: Constructor[] = [];
   
   constructor(config: EZqlWebConfig = {}) {
     this.app = express();
@@ -51,20 +53,19 @@ export class EZqlApplication {
     
     return this;
   }
-  
-  /**
-   * Registra controladores
+    /**
+   * Registra un controlador individual usando decoradores
    */
-  useControllers(controllers: Constructor[]): this {
-    this.router.registerControllers(controllers);
+  useController(controller: Constructor): this {
+    this.controllers.push(controller);
     return this;
   }
   
   /**
-   * Registra un controlador individual
+   * Registra múltiples controladores
    */
-  useController(controller: Constructor): this {
-    this.router.registerController(controller);
+  useControllers(controllers: Constructor[]): this {
+    this.controllers.push(...controllers);
     return this;
   }
   
@@ -83,23 +84,28 @@ export class EZqlApplication {
     this.app.use(path, router);
     return this;
   }
-  
   /**
    * Inicia el servidor
    */
   async listen(): Promise<void> {
-    // Registrar rutas del framework
-    this.app.use(this.router.getRouter());
-    
-    // Setup error handling
-    this.setupErrorHandling();
-    
     // Conectar a la base de datos si existe
     if (this.ezqlClient && !this.ezqlClient.isConnected()) {
       await this.ezqlClient.connect();
       console.log('[EZql] Connected to database successfully');
     }
-      return new Promise((resolve) => {
+    
+    // Bootstrap controllers usando decoradores
+    if (this.controllers.length > 0 && this.ezqlClient) {
+      bootstrapControllers(this.app, this.controllers, this.ezqlClient);
+    }
+    
+    // Registrar rutas del framework tradicional (si las hay)
+    this.app.use(this.router.getRouter());
+    
+    // Setup error handling
+    this.setupErrorHandling();
+    
+    return new Promise((resolve) => {
       const port = this.config.port || 3000;
       const host = this.config.host || '0.0.0.0';
       
